@@ -7,6 +7,7 @@ import FlashOverlay from '@/components/HUD/FlashOverlay'
 import PointerTracker from '@/components/Cursor/PointerTracker'
 import IntroScene from '@/scenes/Intro/IntroScene'
 import EarthScene from '@/scenes/Earth/EarthScene'
+import SpaceScene from '@/scenes/Space/SpaceScene'
 import { useScrollSync } from '@/hooks/useScrollSync'
 import { TOTAL_VH } from '@/data/timeline'
 
@@ -19,11 +20,12 @@ function App() {
       <div className="fixed inset-0 z-0">
         <Canvas camera={{ position: [0, 1.6, 14], fov: 56, near: 0.1, far: 400 }} gl={{ antialias: true }}>
           <color attach="background" args={['#050810']} />
-          <fogExp2 attach="fog" args={['#050810', 0.033]} />
+          <fogExp2 attach="fog" args={['#050810', 0.02]} />
           <Suspense fallback={null}>
             <PointerTracker />
             <IntroScene />
             <EarthScene />
+            <SpaceScene />
           </Suspense>
         </Canvas>
       </div>

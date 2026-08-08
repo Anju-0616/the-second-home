@@ -14,7 +14,7 @@ export const PHASES: Phase[] = [
     weightVh: 700,
     flash: { threshold: 0.97, color: '#fff2df' },
   },
-  { id: 'space', name: 'Journey Through Space', weightVh: 750 },
+  { id: 'space', name: 'Journey Through Space', weightVh: 750, flash: { threshold:0.96, color: '#e8f0ff'} },
   { id: 'planetOne', name: 'New Worlds', weightVh: 700 },
   { id: 'planetTwo', name: 'The Second Home', weightVh: 650 },
   { id: 'ending', name: 'Ending', weightVh: 400 },
