@@ -8,6 +8,7 @@ import PointerTracker from '@/components/Cursor/PointerTracker'
 import IntroScene from '@/scenes/Intro/IntroScene'
 import EarthScene from '@/scenes/Earth/EarthScene'
 import SpaceScene from '@/scenes/Space/SpaceScene'
+import PlanetOneScene from '@/scenes/PlanetOne/PlanetOneScene'
 import { useScrollSync } from '@/hooks/useScrollSync'
 import { TOTAL_VH } from '@/data/timeline'
 
@@ -26,6 +27,7 @@ function App() {
             <IntroScene />
             <EarthScene />
             <SpaceScene />
+            <PlanetOneScene />
           </Suspense>
         </Canvas>
       </div>
