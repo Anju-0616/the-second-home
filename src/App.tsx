@@ -1,12 +1,13 @@
 import { Suspense, useRef } from 'react'
 import { Canvas } from '@react-three/fiber'
-import Loader from '@/components/Loader/Loader'
+import Loader from '@/components/Loader/loader'
 import ProgressBar from '@/components/HUD/ProgressBar'
 import DebugHUD from '@/components/HUD/DebugHUD'
 import FlashOverlay from '@/components/HUD/FlashOverlay'
 import SubtitleDisplay from '@/components/HUD/SubtitleDisplay'
 import EndingFinale from '@/components/HUD/EndingFinale'
 import PointerTracker from '@/components/Cursor/PointerTracker'
+import PostFX from '@/components/PostFX/PostFX'
 import IntroScene from '@/scenes/Intro/IntroScene'
 import EarthScene from '@/scenes/Earth/EarthScene'
 import SpaceScene from '@/scenes/Space/SpaceScene'
@@ -23,7 +24,10 @@ function App() {
   return (
     <>
       <div className="fixed inset-0 z-0">
-        <Canvas camera={{ position: [0, 1.6, 14], fov: 56, near: 0.1, far: 400 }} gl={{ antialias: true }}>
+        <Canvas
+          camera={{ position: [0, 1.6, 14], fov: 56, near: 0.1, far: 400 }}
+          gl={{ antialias: false }}
+        >
           <color attach="background" args={['#050810']} />
           <fogExp2 attach="fog" args={['#050810', 0.02]} />
           <Suspense fallback={null}>
@@ -34,6 +38,7 @@ function App() {
             <PlanetOneScene />
             <PlanetTwoScene />
             <EndingScene />
+            <PostFX />
           </Suspense>
         </Canvas>
       </div>
