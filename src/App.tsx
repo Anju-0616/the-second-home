@@ -4,11 +4,13 @@ import Loader from '@/components/Loader/loader'
 import ProgressBar from '@/components/HUD/ProgressBar'
 import DebugHUD from '@/components/HUD/DebugHUD'
 import FlashOverlay from '@/components/HUD/FlashOverlay'
+import SubtitleDisplay from '@/components/HUD/SubtitleDisplay'
 import PointerTracker from '@/components/Cursor/PointerTracker'
 import IntroScene from '@/scenes/Intro/IntroScene'
 import EarthScene from '@/scenes/Earth/EarthScene'
 import SpaceScene from '@/scenes/Space/SpaceScene'
 import PlanetOneScene from '@/scenes/PlanetOne/PlanetOneScene'
+import PlanetTwoScene from '@/scenes/PlanetTwo/PlanetTwoScene'
 import { useScrollSync } from '@/hooks/useScrollSync'
 import { TOTAL_VH } from '@/data/timeline'
 
@@ -28,6 +30,7 @@ function App() {
             <EarthScene />
             <SpaceScene />
             <PlanetOneScene />
+            <PlanetTwoScene />
           </Suspense>
         </Canvas>
       </div>
@@ -40,6 +43,7 @@ function App() {
 
       <ProgressBar />
       <DebugHUD />
+      <SubtitleDisplay />
       <FlashOverlay />
       <Loader />
     </>
