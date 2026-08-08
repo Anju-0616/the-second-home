@@ -25,7 +25,8 @@ export const PHASES: Phase[] = [
       { text: 'Hope returns.', range: [0.72, 0.82] },
       { text: 'The Second Home.', range: [0.9, 0.99] },
     ], },
-  { id: 'ending', name: 'Ending', weightVh: 400 },
+  { id: 'ending', name: 'Ending', weightVh: 400,flash: { threshold: 0.985, color: '#050810' },
+  subtitles: [{ text: 'Did you enjoy your journey?', range: [0.05, 0.2] }],  },
 ]
 
 export const TOTAL_VH = PHASES.reduce((sum, p) => sum + p.weightVh, 0)
