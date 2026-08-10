@@ -9,6 +9,7 @@ import EarthGlobe from './EarthGlobe'
 import EarthCracks from './EarthCracks'
 import EarthExplosion from './EarthExplosion'
 import StarField from './StarField'
+import { usePhaseVisibility } from '@/hooks/usePhaseVisibility'
 
 const PHASE_INDEX = getPhaseRanges().findIndex((p) => p.id === 'earth')
 const OFFSET_Z = -22
@@ -17,6 +18,7 @@ function EarthScene() {
   const { camera } = useThree()
   const sunLight = useRef<THREE.DirectionalLight>(null)
   const lookTarget = useRef(new THREE.Vector3(0, 0, OFFSET_Z))
+  const groupRef = usePhaseVisibility(PHASE_INDEX)
 
   useFrame((state) => {
   if (scrollStore.activeIndex !== PHASE_INDEX) return
@@ -50,7 +52,7 @@ function EarthScene() {
 })
 
   return (
-    <group position={[0, 0, OFFSET_Z]}>
+    <group ref={groupRef} position={[0, 0, OFFSET_Z]}>
       <ambientLight color="#1a2540" intensity={0.7} />
       <directionalLight ref={sunLight} color="#dfeaff" intensity={1.1} position={[10, 8, 15]} />
       <StarField />

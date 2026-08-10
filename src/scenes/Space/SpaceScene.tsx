@@ -11,6 +11,7 @@ import Nebula from './Nebula'
 import ConstellationLines from './ConstellationLines'
 import SpaceParticles from './SpaceParticles'
 import WorldGlow from './WorldGlow'
+import { usePhaseVisibility } from '@/hooks/usePhaseVisibility'
 
 const PHASE_INDEX = getPhaseRanges().findIndex((p) => p.id === 'space')
 const OFFSET_Z = -50
@@ -18,6 +19,7 @@ const OFFSET_Z = -50
 function SpaceScene() {
   const { camera } = useThree()
   const lookTarget = useRef(new THREE.Vector3(0, 0, OFFSET_Z))
+  const groupRef = usePhaseVisibility(PHASE_INDEX)
 
   useFrame(() => {
     if (scrollStore.activeIndex !== PHASE_INDEX) return
@@ -38,7 +40,7 @@ function SpaceScene() {
   })
 
   return (
-    <group position={[0, 0, OFFSET_Z]}>
+    <group ref={groupRef} position={[0, 0, OFFSET_Z]}>
       <ambientLight color="#141c30" intensity={0.6} />
       <directionalLight color="#dfeaff" intensity={0.5} position={[8, 6, 10]} />
       <DeepStars />

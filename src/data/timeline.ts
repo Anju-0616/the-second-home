@@ -3,6 +3,7 @@ export interface Phase {
   name: string
   /** Relative scroll weight — bigger number = more scroll distance for this phase */
   weightVh: number
+  exposure?: number 
   flash?: FlashConfig
   subtitles?: SubtitleEntry[]
 }

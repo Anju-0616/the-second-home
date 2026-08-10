@@ -1,58 +1,93 @@
 import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
+import { Billboard } from '@react-three/drei'
 import * as THREE from 'three'
 import pointerStore from '@/utils/pointerStore'
+import { getProceduralRoughnessMap } from '@/utils/proceduralTexture'
+import '@/shaders/HologramCoreMaterial'
+import '@/shaders/EnergyFieldMaterial'
+import type { HologramCoreMaterialInstance } from '@/shaders/HologramCoreMaterial'
+import type { EnergyFieldMaterialInstance } from '@/shaders/EnergyFieldMaterial'
 
 function HologramCore() {
   const core = useRef<THREE.Group>(null)
-  const coreSphere = useRef<THREE.Mesh>(null)
-  const coreWire = useRef<THREE.Mesh>(null)
-  const ring1 = useRef<THREE.Mesh>(null)
-  const ring2 = useRef<THREE.Mesh>(null)
+  const coreMat = useRef<HologramCoreMaterialInstance>(null)
+  const fieldA = useRef<EnergyFieldMaterialInstance>(null)
+  const fieldB = useRef<EnergyFieldMaterialInstance>(null)
   const light = useRef<THREE.PointLight>(null)
+  const roughnessMap = getProceduralRoughnessMap()
 
   useFrame((state, dt) => {
     const t = state.clock.elapsedTime
     if (!core.current) return
 
-    core.current.rotation.y += dt * 0.15
-    core.current.rotation.x += (pointerStore.y * 0.25 - core.current.rotation.x) * 0.04
-    core.current.rotation.z += (-pointerStore.x * 0.15 - core.current.rotation.z) * 0.04
+    core.current.rotation.y += dt * 0.1
+    core.current.rotation.x += (pointerStore.y * 0.15 - core.current.rotation.x) * 0.04
+    core.current.rotation.z += (-pointerStore.x * 0.1 - core.current.rotation.z) * 0.04
 
-    if (coreWire.current) coreWire.current.rotation.y -= dt * 0.1
-    if (ring1.current) ring1.current.rotation.z += dt * 0.12
-    if (ring2.current) ring2.current.rotation.z -= dt * 0.09
-
-    const pulse = 1 + Math.sin(t * 1.6) * 0.05
-    coreSphere.current?.scale.setScalar(pulse)
-    if (light.current) light.current.intensity = 2.6 + Math.sin(t * 1.6) * 0.6
+    if (coreMat.current) coreMat.current.uTime = t
+    if (fieldA.current) fieldA.current.uTime = t
+    if (fieldB.current) fieldB.current.uTime = t * 0.8
+    if (light.current) light.current.intensity = 3.0 + Math.sin(t * 1.3) * 0.6
   })
 
   return (
-    <group ref={core} position={[0, 1.4, 0]}>
-      <pointLight ref={light} color="#9fFFFb" intensity={3} distance={12} decay={2} />
-      <mesh ref={coreSphere}>
-        <icosahedronGeometry args={[0.9, 2]} />
-        <meshStandardMaterial
-          color="#9fFFFb"
-          emissive="#4ce0e8"
-          emissiveIntensity={1.4}
-          transparent
-          opacity={0.35}
-        />
+    <group position={[0, 1.2, 0]}>
+      {/* pedestal — solid, physical, picks up HDRI reflections + procedural roughness */}
+      <mesh position={[0, -1.05, 0]}>
+        <cylinderGeometry args={[0.9, 1.05, 0.25, 32]} />
+        <meshStandardMaterial color="#0a1018" roughnessMap={roughnessMap} roughness={0.5} metalness={0.75} />
       </mesh>
-      <mesh ref={coreWire}>
-        <icosahedronGeometry args={[1.35, 1]} />
-        <meshBasicMaterial color="#4ce0e8" wireframe transparent opacity={0.5} />
+      <mesh position={[0, -0.9, 0]}>
+        <cylinderGeometry args={[0.6, 0.6, 0.06, 32]} />
+        <meshStandardMaterial color="#0d1a22" emissive="#4ce0e8" emissiveIntensity={0.6} metalness={0.6} roughness={0.4} />
       </mesh>
-      <mesh ref={ring1} rotation={[Math.PI / 2.3, 0, 0]}>
-        <torusGeometry args={[2.1, 0.02, 8, 80]} />
-        <meshBasicMaterial color="#4ce0e8" />
-      </mesh>
-      <mesh ref={ring2} rotation={[-Math.PI / 2.6, 0, Math.PI / 4]} scale={1.25}>
-        <torusGeometry args={[2.1, 0.02, 8, 80]} />
-        <meshBasicMaterial color="#4ce0e8" />
-      </mesh>
+
+      <group ref={core}>
+        <pointLight ref={light} color="#9fFFFb" intensity={3} distance={12} decay={2} />
+
+        {/* volumetric energy core — smooth high-poly sphere, shader-driven, no polygon silhouette */}
+        <mesh>
+          <sphereGeometry args={[0.85, 96, 96]} />
+          <hologramCoreMaterial
+            ref={coreMat}
+            uColor={new THREE.Color('#4ce0e8')}
+            uColorCore={new THREE.Color('#eafeff')}
+            uIntensity={1}
+            transparent
+            depthWrite={false}
+            blending={THREE.AdditiveBlending}
+          />
+        </mesh>
+
+        {/* soft layered energy field — camera-facing gradient discs, replaces ring/torus geometry */}
+        <Billboard>
+          <mesh scale={2.1}>
+            <circleGeometry args={[1, 48]} />
+            <energyFieldMaterial
+              ref={fieldA}
+              uColor={new THREE.Color('#4ce0e8')}
+              uOpacity={0.5}
+              transparent
+              depthWrite={false}
+              blending={THREE.AdditiveBlending}
+            />
+          </mesh>
+        </Billboard>
+        <Billboard>
+          <mesh scale={2.7} rotation={[0, 0, Math.PI / 5]}>
+            <circleGeometry args={[1, 48]} />
+            <energyFieldMaterial
+              ref={fieldB}
+              uColor={new THREE.Color('#9fFFFb')}
+              uOpacity={0.3}
+              transparent
+              depthWrite={false}
+              blending={THREE.AdditiveBlending}
+            />
+          </mesh>
+        </Billboard>
+      </group>
     </group>
   )
 }

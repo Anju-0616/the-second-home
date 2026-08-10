@@ -8,6 +8,7 @@ import { lerp, smooth } from '@/utils/math'
 import LabMiniature from '@/components/Civilization/LabMiniature'
 import ArchivePortals from './ArchivePortals'
 import StarField from '@/components/Stars/StarField'
+import { usePhaseVisibility } from '@/hooks/usePhaseVisibility'
 
 const PHASE_INDEX = getPhaseRanges().findIndex((p) => p.id === 'ending')
 const OFFSET_Z = -364
@@ -15,6 +16,7 @@ const OFFSET_Z = -364
 function EndingScene() {
   const { camera } = useThree()
   const lookTarget = useRef(new THREE.Vector3(0, 0.5, OFFSET_Z))
+  const groupRef = usePhaseVisibility(PHASE_INDEX)
 
   useFrame(() => {
     if (scrollStore.activeIndex !== PHASE_INDEX) return
@@ -33,7 +35,7 @@ function EndingScene() {
   })
 
   return (
-    <group position={[0, 0, OFFSET_Z]}>
+    <group ref={groupRef} position={[0, 0, OFFSET_Z]}>
       <ambientLight color="#0a0f1a" intensity={0.4} />
       <StarField count={600} spreadX={140} spreadY={100} zFront={40} zSpread={220} opacity={0.6} parallax={0.4} />
       <ArchivePortals />

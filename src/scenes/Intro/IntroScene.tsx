@@ -8,6 +8,7 @@ import LabParticles from './LabParticles'
 import LabDoors from './LabDoors'
 import LabDrones from './LabDrones'
 import LabEnvironment from './LabEnvironment'
+import { usePhaseVisibility } from '@/hooks/usePhaseVisibility'
 
 const PHASE_INDEX = 0
 const OFFSET_Z = 0
@@ -17,6 +18,7 @@ function IntroScene() {
   const ambient = useRef<THREE.AmbientLight>(null)
   const rim = useRef<THREE.DirectionalLight>(null)
   const lookTarget = useRef(new THREE.Vector3(0, 1.3, 6))
+  const groupRef = usePhaseVisibility(PHASE_INDEX)
 
   useFrame(() => {
     if (scrollStore.activeIndex !== PHASE_INDEX) return
@@ -39,10 +41,12 @@ function IntroScene() {
     const dim = lp > dimStart ? 1 - Math.min(1, (lp - dimStart) / (dimEnd - dimStart)) * 0.7 : 1
     if (ambient.current) ambient.current.intensity = 1.1 * dim
     if (rim.current) rim.current.intensity = 0.6 * dim
+
+    // exposure lift as the doors open — signals "brighter world beyond" before Earth is even visible
   })
 
   return (
-    <group position={[0, 0, OFFSET_Z]}>
+    <group ref={groupRef} position={[0, 0, OFFSET_Z]}>
       <ambientLight ref={ambient} color="#1a2540" intensity={1.1} />
       <directionalLight ref={rim} color="#4ce0e8" intensity={0.6} position={[-6, 6, -8]} />
       <LabEnvironment />

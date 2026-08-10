@@ -8,6 +8,7 @@ import { lerp, smooth } from '@/utils/math'
 import { NEW_WORLDS } from '@/data/planets'
 import Planet from '@/components/Planet/Planet'
 import StarField from '@/components/Stars/StarField'
+import { usePhaseVisibility } from '@/hooks/usePhaseVisibility'
 
 const PHASE_INDEX = getPhaseRanges().findIndex((p) => p.id === 'planetOne')
 const OFFSET_Z = -202
@@ -15,6 +16,7 @@ const OFFSET_Z = -202
 function PlanetOneScene() {
   const { camera } = useThree()
   const lookTarget = useRef(new THREE.Vector3(0, 0, OFFSET_Z))
+  const groupRef = usePhaseVisibility(PHASE_INDEX)
 
   useFrame(() => {
     if (scrollStore.activeIndex !== PHASE_INDEX) return
@@ -34,7 +36,7 @@ function PlanetOneScene() {
   })
 
   return (
-    <group position={[0, 0, OFFSET_Z]}>
+    <group ref={groupRef} position={[0, 0, OFFSET_Z]}>
       <ambientLight color="#16101f" intensity={0.5} />
       <directionalLight color="#dfe0ff" intensity={0.4} position={[6, 10, 8]} />
       <StarField count={900} spreadX={90} spreadY={60} zFront={20} zSpread={180} parallax={0.9} />

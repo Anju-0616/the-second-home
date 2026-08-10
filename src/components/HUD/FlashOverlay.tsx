@@ -7,6 +7,7 @@ const ranges = getPhaseRanges()
 
 function FlashOverlay() {
   const el = useRef<HTMLDivElement>(null)
+  const MAX_FLASH_OPACITY = 0.03
 
   useEffect(() => {
     let raf: number
@@ -15,7 +16,7 @@ function FlashOverlay() {
       let opacity = 0
       if (range?.flash) {
         const { threshold } = range.flash
-        opacity = clamp01((scrollStore.localProgress - threshold) / (1 - threshold))
+        opacity = clamp01((scrollStore.localProgress - threshold) / (1 - threshold)) * MAX_FLASH_OPACITY
       }
       if (el.current) {
         el.current.style.opacity = String(opacity)

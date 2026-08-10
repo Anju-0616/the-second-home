@@ -11,12 +11,6 @@ function PostFX() {
         mipmapBlur
         radius={0.55}
       />
-      <DepthOfField
-        focusDistance={0.015}
-        focalLength={0.04}
-        bokehScale={2.5}
-        height={480}
-      />
       <ChromaticAberration
         offset={[0.0005, 0.0005]}
         blendFunction={BlendFunction.NORMAL}
